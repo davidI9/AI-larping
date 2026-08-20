@@ -1,2 +1,4 @@
 historial_conversacion.md
 transcripcion_aigis.md
+*.env
+*.pyc
