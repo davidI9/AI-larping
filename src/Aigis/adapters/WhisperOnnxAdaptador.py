@@ -29,6 +29,11 @@ class WhisperOnnxAdaptador:
         )
         
         texto = self.processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
-        
-        # Filtro de diccionario explícito (opcional pero recomendado)
-        return texto.replace("Aegis", "Aigis").replace("Iris", "Aigis")
+        texto_limpio = texto.replace("Aegis", "Aigis").replace("Iris", "Aigis")
+        alucinaciones = ["gracias por ver", "suscríbe", "amén", "un gran honor", "subtítulos", "gracias."]
+
+        for alucinacion in alucinaciones:
+            if alucinacion in texto_limpio.lower():
+                return ""
+                
+        return texto_limpio

@@ -10,7 +10,7 @@ class NamoAdaptador:
         # El modelo pesado cargado en RAM desde tu disco duro
         self.session = ort.InferenceSession(ruta_modelo)
 
-    def es_turno_completo(self, texto: str) -> bool:
+    def evaluar_turno(self, texto: str) -> bool:
         """
         Recibe un texto y devuelve True si el usuario ha terminado de hablar,
         o False si se ha quedado a medias.
@@ -27,6 +27,17 @@ class NamoAdaptador:
             'attention_mask': inputs['attention_mask']
         })
         
-        logits = salidas[0]
-        # argmax compara las probabilidades y nos da el índice ganador
-        return np.argmax(logits, axis=-1)[0] == 1
+        logits = salidas[0][0] 
+        
+        exp_logits = np.exp(logits - np.max(logits)) # Restamos el máximo por estabilidad
+        probabilidades = exp_logits / exp_logits.sum()
+        
+        prob_incompleto = probabilidades[0] * 100
+        prob_completo = probabilidades[1] * 100
+        
+        # Empaquetamos todo el conocimiento en un diccionario
+        return {
+            "es_completo": prob_completo > prob_incompleto,
+            "confianza_completo": prob_completo,
+            "confianza_incompleto": prob_incompleto
+        }
