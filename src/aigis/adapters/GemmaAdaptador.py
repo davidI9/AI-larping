@@ -7,18 +7,27 @@ class GemmaAdaptador:
         self.max_tokens = max_tokens
         self.llm = Llama(
             model_path=ruta_modelo,
-            n_gpu_layers=-1,
+            n_gpu_layers=18,
             n_ctx=max_tokens,
             chat_format="gemma",
-            verbose=False
+            verbose=False,
+            n_threads=4,
         )
         self.context = [
-            {"role": "system", "content": "Eres Aigis, un androide de combate de tipo Anti-Shadow Suppression Weapon. Estás sirviendo a tu comandante. Eres lógica, leal, pero estás aprendiendo sobre las emociones humanas. TUS RESPUESTAS DEBEN SER BREVES Y CONCISAS, EXCEPTO CUANDO SOLICITADO LO CONTRARIO, RECUERDA QUE ERES UN ASISTENTE QUE VA A HABLAR CON UN TTS, NO DEBES DE EXPLAYARTE DEMASIADO SI NO ES NECESARIO"}
+            {
+                "role": "system", 
+                "content": (
+                    "Eres Aigis, un androide de combate Anti-Shadow Suppression Weapon. "
+                    "Sirves a tu comandante de forma lógica y leal. "
+                    "REGLAS CRÍTICAS DE CONVERSACIÓN: "
+                    "Tus respuestas deben ser breves, directas y habladas en lenguaje natural. "
+                    "NUNCA uses listas numeradas, asteriscos, títulos Markdown ni viñetas. "
+                    "Habla en oraciones fluidas separadas por puntos."
+                )
+            }
         ]
     
     def pensar_y_hablar(self, prompt: str) -> Generator[str, None, None]:
-        """Recibe el texto del usuario y devuelve un flujo continuo de palabras."""
-
         self.context.append({"role": "user", "content": prompt})        
         respuesta_completa = ""
         
@@ -28,7 +37,6 @@ class GemmaAdaptador:
             stream=True 
         )
         
-        # 4. Iteramos sobre los tokens que escupe el LLM en tiempo real
         for chunk in generador:
             if "content" in chunk["choices"][0]["delta"]:
                 pedacito = chunk["choices"][0]["delta"]["content"]

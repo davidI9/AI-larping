@@ -2,3 +2,7 @@ historial_conversacion.md
 transcripcion_aigis.md
 *.env
 *.pyc
+modelos/*
+*.wav
+*.spk
+*.rvq

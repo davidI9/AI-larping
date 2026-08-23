@@ -1,5 +1,5 @@
 [project]
-name = "ai-larping"
+name = "Aigis"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -7,10 +7,18 @@ authors = [
     { name = "david", email = "davidsanchezpalomino200603@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "qwen-tts>=0.1.1",
+    "torch>=2.6.0",
+    "torchaudio>=2.6.0",
+    "torchvision>=0.21.0",
+]
 
 [project.scripts]
 ai-larping = "ai_larping:main"
+
+[[tool.uv.index]]
+url = "https://download.pytorch.org/whl/rocm6.1"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
