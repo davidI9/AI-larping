@@ -7,3 +7,4 @@ modelos/*
 *.spk
 *.rvq
 TODOs.txt
+*.gguf
